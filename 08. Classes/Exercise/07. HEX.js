@@ -1,21 +1,22 @@
 class Hex {
-    constructor(value)
-    {
-        this.value = value;
+    constructor(number) {
+        this.number = number;
     }
     valueOf(){
-        return this.value;
+        return this.number;
+    }
+    plus(value){
+        let newVal = this.number + value;
+        return new Hex(newVal);
+    }
+    minus(value){
+        let newVal = this.number - value;
+        return new Hex(newVal);
+    }
+    parse(str){
+        return parseInt(typeof str === 'string' ? str : {str}, 16);
     }
     toString(){
-        return `0x${this.value.toString(16).toLocaleUpperCase()}`
-    }
-    plus(number){
-        return new Hex(this.value + num);
-    }
-    minus(number){
-        return new Hex(this.value - num);
-    }
-    parse(number){
-        return parseInt(num, 16);
+        return `0x${this.number.toString(16).toUpperCase()}`;
     }
 }

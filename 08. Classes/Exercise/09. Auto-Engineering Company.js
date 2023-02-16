@@ -4,8 +4,8 @@ function solve(input)
     for (const line of input) {
         let[carBrand, carModel, producedCars] = line.split(' | ')
         if (!cars.hasOwnProperty(carBrand)) cars[carBrand] = new Map();
-        if (!cars[carBrand].has(carModel)) cars[carBrand].set(carModel, producedCars)
-        else cars[carBrand].set(carModel, cars[carBrand].get(carModel) + producedCars)
+        if (!cars[carBrand].has(carModel)) cars[carBrand].set(carModel, Number(producedCars))
+        else cars[carBrand].set(carModel, cars[carBrand].get(carModel) + Number(producedCars))
     }
     for (const key in cars) {
         console.log(key);

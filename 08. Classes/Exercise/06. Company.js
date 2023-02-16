@@ -1,37 +1,56 @@
-function company() {
-    class Company {
-        constructor() {
-            this.departments = {};
+class Company {
+    constructor() {
+        this.departments = [];
+    }
+
+    addEmployee(name, salary, position, department) {
+        let args = [name, salary, position, department];
+        if (args.some(x => x === '' || x === undefined || x === null) || salary < 0) {
+            throw new Error('Invalid input!');
         }
 
-        addEmployee(name, salary, position, department) {
-            if (!name || (!salary || salary < 0) || !position || !department) { throw new Error('Invalid input!'); }
-            if (!this.departments.hasOwnProperty(department)) { this.departments[department] = []; }
-            this.departments[department].push({ name, salary, position });
-            return `New employee is hired. Name: ${name}. Position: ${position}`;
-        }
+        let employee = {
+            name: name,
+            salary: Number(salary),
+            position: position
+        };
 
-        bestDepartment() {
-            const depsAvgSalaries = {};
-            for (const depKey in this.departments) {
-                const avgSalary = this.departments[depKey].reduce((acc, cur, inx, arr) => acc + (cur.salary / arr.length), 0);
-                depsAvgSalaries[depKey] = avgSalary;
+        if (!this.departments[department]) {
+            this.departments[department] = [];
+        }
+        this.departments[department].push(employee);
+
+        return `New employee is hired. Name: ${name}. Position: ${position}`;
+    }
+
+    bestDepartment() {
+        let bestDepartment = '';
+        let maxSalary = 0;
+
+        for (const [key, employees] of Object.entries(this.departments)) {
+            let currentDepartmentsAvgSalary = this.departments[key].reduce((acc, w) => acc + w.salary, 0) / employees.length;
+            // Reach inside for every department's workers
+            if (currentDepartmentsAvgSalary > maxSalary) {
+                bestDepartment = key;
+                maxSalary = currentDepartmentsAvgSalary;
             }
+        }
 
-            const bestOneDep = Object
-                .entries(depsAvgSalaries)
-                .sort((a, b) => b[1] - a[1])[0];
-            const bestOneDepEmp = Object
-                .values(this.departments[bestOneDep[0]])
-                .sort((a, b) => b.salary - a.salary || a.name.localeCompare(b.name));
+        if (bestDepartment != '') {
+            this.departments[bestDepartment].sort((x, y) => y.salary - x.salary || x.name.localeCompare(y.name));
 
-            let result = '';
-            result += `Best Department is: ${bestOneDep[0]}\n`;
-            result += `Average salary: ${bestOneDep[1].toFixed(2)}\n`;
-            bestOneDepEmp.forEach(emp => result += `${emp.name} ${emp.salary} ${emp.position}\n`);
-            return result.trim();
+            let output = `Best Department is: ${bestDepartment}\n`;
+            output += `Average salary: ${maxSalary.toFixed(2)}\n`;
+
+            for (const worker of Object.values(this.departments[bestDepartment])) {
+                output += `${worker.name} ${worker.salary} ${worker.position}\n`;
+            }
+        
+            return output.trim();
         }
     }
+}
+
 
     let company = new Company();
     company.addEmployee('Stanimir', 2000, 'engineer', 'Construction');
@@ -42,5 +61,5 @@ function company() {
     company.addEmployee('Pesho', 1000, 'graphical designer', 'Marketing');
     company.addEmployee('Gosho', 1350, 'HR', 'Human resources');
     console.log(company.bestDepartment());
-}
+
 company();
